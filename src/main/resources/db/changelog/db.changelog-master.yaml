@@ -1,0 +1,69 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: sanjeevghimire
+      changes:
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: username
+                  type: varchar(50)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(100)
+                  constraints:
+                    nullable: false
+  - changeSet:
+      id: 2
+      author: sanjeevghimire
+      changes:
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: Sanjeev
+              - column:
+                  name: last_name
+                  value: Ghimire
+              - column:
+                  name: username
+                  value: sanjeevghimire
+              - column:
+                  name: email
+                  value: gsanjeev7@gmail.com
+        - insert:
+            tableName: user
+            columns:
+              - column:
+                  name: first_name
+                  value: John
+              - column:
+                  name: last_name
+                  value: doe
+              - column:
+                  name: username
+                  value: johndoe
+              - column:
+                  name: email
+                  value: johndoe@fakemail.com

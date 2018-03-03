@@ -83,3 +83,14 @@ There are two kind of test written.
 
 Run: `mvn clean test`
 
+# Swagger API definition
+The API UI can be accessed using URL: `http://localhost:8080/swagger-ui.html`
+
+![Swagger UI](http://url/to/img.png)
+
+# License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+

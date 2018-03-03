@@ -29,13 +29,14 @@ Command:
 
 Sample Output: 
 
-```HTTP/1.1 201
+``` HTTP/1.1 201
 Location: /api/users/
 X-helloWorld-alert: A comcast user is created with identifier sg
 X-helloWorld-params: sg
 Content-Type: application/json;charset=UTF-8
 Transfer-Encoding: chunked
-Date: Sat, 03 Mar 2018 17:29:32 GMT```
+Date: Sat, 03 Mar 2018 17:29:32 GMT
+```
 
 ## Delete User - DELETE 
 
@@ -50,7 +51,8 @@ Sample Output:
 < X-helloWorld-params: 2
 < Content-Length: 0
 < Date: Sat, 03 Mar 2018 17:28:52 GMT
-<```
+<
+```
 
 ## Get User Posts - GET 
 

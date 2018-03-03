@@ -86,7 +86,7 @@ Run: `mvn clean test`
 # Swagger API definition
 The API UI can be accessed using URL: `http://localhost:8080/swagger-ui.html`
 
-![Swagger UI](http://url/to/img.png)
+![Swagger UI](https://github.com/sanjeevghimire/helloworld-rest-api-springboot/blob/master/swaggerUI.png)
 
 # License
 

@@ -2,6 +2,7 @@ package com.comcast.helloworld;
 
 
 import com.comcast.helloworld.controller.UserController;
+import com.comcast.helloworld.domain.User;
 import com.comcast.helloworld.dto.UserDTO;
 import com.comcast.helloworld.dto.UserPost;
 import com.comcast.helloworld.service.UserService;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
@@ -22,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +49,11 @@ public class UserControllerTests {
     private static final String DEFAULT_TITLE = "Test Title";
     private static final String DEFAULT_BODY = "Test body";
 
+    private static final int ID_DOESNT_EXIST = 23;
+
+
     private  UserDTO user1 = null;
+    private User user;
 
     List<UserDTO> mockUsers = null;
 
@@ -58,6 +61,7 @@ public class UserControllerTests {
 
     private static final String userJSON = "{\"firstName\":\"testFName\",\"lastName\":\"testLName\",\"email\":\"email@test.com\",\"username\":\"testusername\"}";
 
+    private static final String USER_JSON_WITH_ID = "{\"id\":\"1\",\"firstName\":\"testFName\",\"lastName\":\"testLName\",\"email\":\"email@test.com\",\"username\":\"testusername\"}";
 
 
     @Autowired
@@ -73,6 +77,15 @@ public class UserControllerTests {
 
     @Before
     public void setup() {
+
+
+        user = new User();
+        user.setId(10L);
+        user.setFirstName("sanjeev");
+        user.setLastName("ghimire");
+        user.setEmail("gsanjeev7@gmail.com");
+        user.setUsername("sanjeevghimire");
+
 
         user1 = new UserDTO();
         user1.setId(10L);
@@ -145,6 +158,95 @@ public class UserControllerTests {
 
     }
 
+
+    /**
+     * Attempt to create user with existing username
+     * @throws Exception
+     */
+    @Test
+    public void createComcastUserWhoseUsernameAlreadyExistTest() throws Exception {
+
+        Mockito.when(
+                userService.createComcastUser(Mockito.any(UserDTO.class))).thenReturn(user1);
+        Mockito.when(
+                userService.findUserByEmailIgnoreCase(Mockito.anyString())).thenReturn(Optional.empty());
+        Mockito.when(
+                userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.of(user));
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/users")
+                .accept(MediaType.APPLICATION_JSON).content(userJSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = restUserMockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        assertEquals("Username already exists",response.getHeader("X-helloWorld-alert"));
+
+    }
+
+    /**
+     * Attempt to create user with existing username
+     * @throws Exception
+     */
+    @Test
+    public void createComcastUserWhoseEmailAlreadyExistTest() throws Exception {
+
+        Mockito.when(
+                userService.createComcastUser(Mockito.any(UserDTO.class))).thenReturn(user1);
+        Mockito.when(
+                userService.findUserByEmailIgnoreCase(Mockito.anyString())).thenReturn(Optional.of(user));
+        Mockito.when(
+                userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.empty());
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/users")
+                .accept(MediaType.APPLICATION_JSON).content(userJSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = restUserMockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        assertEquals("Email already exists",response.getHeader("X-helloWorld-alert"));
+
+    }
+
+    /**
+     * Attempt to create user with existing username
+     * @throws Exception
+     */
+    @Test
+    public void createComcastUserWhoseIdAlreadyExistTest() throws Exception {
+
+        Mockito.when(
+                userService.createComcastUser(Mockito.any(UserDTO.class))).thenReturn(user1);
+        Mockito.when(
+                userService.findUserByEmailIgnoreCase(Mockito.anyString())).thenReturn(Optional.of(user));
+        Mockito.when(
+                userService.findUserByUsername(Mockito.anyString())).thenReturn(Optional.empty());
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .post("/api/users")
+                .accept(MediaType.APPLICATION_JSON).content(USER_JSON_WITH_ID)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = restUserMockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        assertEquals("New user cannot have id",response.getHeader("X-helloWorld-alert"));
+
+    }
+
+
     /**
      * Successfull deletion of comcast user.
      * @throws Exception
@@ -153,10 +255,11 @@ public class UserControllerTests {
     public void deleteComcastUserTest() throws Exception {
 
         Mockito.doNothing().when(userService).deleteUser(Mockito.anyLong());
+        Mockito.when(userService.findUserById(Mockito.anyLong())).thenReturn(Optional.of(user));
 
         RequestBuilder requestBuilder = MockMvcRequestBuilders
                 .delete("/api/users/1")
-                .accept(MediaType.APPLICATION_JSON).content(userJSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON);
 
         MvcResult result = restUserMockMvc.perform(requestBuilder).andReturn();
@@ -166,6 +269,32 @@ public class UserControllerTests {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
 
         assertEquals("A user is deleted with identifier 1",response.getHeader("X-helloWorld-alert"));
+
+    }
+
+
+    /**
+     *  Deleting user that doesn't exist
+     * @throws Exception
+     */
+    @Test
+    public void deleteComcastUserThatDoesntExistTest() throws Exception {
+
+        Mockito.doNothing().when(userService).deleteUser(Mockito.anyLong());
+        Mockito.when(userService.findUserById(Mockito.anyLong())).thenReturn(Optional.empty());
+
+        RequestBuilder requestBuilder = MockMvcRequestBuilders
+                .delete("/api/users/"+ID_DOESNT_EXIST)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON);
+
+        MvcResult result = restUserMockMvc.perform(requestBuilder).andReturn();
+
+        MockHttpServletResponse response = result.getResponse();
+
+        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
+
+        assertEquals("User doesn't exist with id "+ ID_DOESNT_EXIST,response.getHeader("X-helloWorld-alert"));
 
     }
 

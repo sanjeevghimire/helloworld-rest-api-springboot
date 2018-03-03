@@ -4,18 +4,8 @@ package com.comcast.helloworld;
 import com.comcast.helloworld.dto.UserDTO;
 import org.json.JSONException;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.internal.matchers.GreaterThan;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.embedded.LocalServerPort;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.AsyncRestTemplate;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
@@ -26,31 +16,15 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        classes = Application.class)
-public class UserControllerIntegrationTest {
+
+public class UserControllerIntegrationTest extends BaseIntegrationTest {
 
 
-    private Logger logger = LoggerFactory.getLogger(UserControllerIntegrationTest.class);
 
-    @LocalServerPort
-    private int port;
-
-
-    @Autowired
-    private TestRestTemplate restTemplate;
-
-    @Autowired
-    private AsyncRestTemplate asyncRestTemplate;
-
-    HttpHeaders headers = new HttpHeaders();
 
     @Test
-    @Transactional
     public void testGetAllComcastUsers() throws JSONException {
-        HttpEntity<String> entity = new HttpEntity<String>(null, headers);
+        HttpEntity<String> entity = new HttpEntity<>(null, headers);
 
         ResponseEntity<String> response = restTemplate.exchange(
                 createURLWithPort("/api/users"),
@@ -64,7 +38,6 @@ public class UserControllerIntegrationTest {
 
 
     @Test
-    @Transactional
     public void testCreateComcastUsers() throws JSONException {
 
         UserDTO user = new UserDTO();
@@ -139,11 +112,6 @@ public class UserControllerIntegrationTest {
 
 
 
-    }
-
-
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
     }
 
 

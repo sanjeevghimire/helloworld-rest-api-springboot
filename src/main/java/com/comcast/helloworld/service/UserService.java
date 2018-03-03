@@ -119,7 +119,12 @@ public class UserService {
     }
 
 
-
-
-
+    /**
+     * Return user by id
+     * @param id
+     * @return
+     */
+    public Optional<User> findUserById(Long id) {
+        return userRepository.findOneById(id);
+    }
 }

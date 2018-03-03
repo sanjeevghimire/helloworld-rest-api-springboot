@@ -58,7 +58,7 @@ public class UserController {
 
         if (userDTO.getId() != null) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("New user cannot have id",userDTO.getId().toString())).build();
-        } else if (userService.findUserByEmailIgnoreCase(userDTO.getUsername().toLowerCase()).isPresent()) {
+        } else if (userService.findUserByUsername(userDTO.getUsername().toLowerCase()).isPresent()) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Username already exists",userDTO.getUsername())).build();
         } else if (userService.findUserByEmailIgnoreCase(userDTO.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("Email already exists",userDTO.getEmail())).build();
@@ -71,7 +71,7 @@ public class UserController {
     }
 
     /**
-     * DELETE /users/:id -> delete the "login" User.
+     * DELETE /users/:id -> delete the User by id.
      *
      * @param id the id of the user to delete
      * @return the ResponseEntity with status 200 (OK)
@@ -79,6 +79,11 @@ public class UserController {
     @DeleteMapping("/users/{id}")
     public ResponseEntity<Void> deleteComcastUser(@PathVariable Long id) {
         log.debug("REST request to delete User: {}", id);
+
+        if(!userService.findUserById(id).isPresent()){
+            return ResponseEntity.badRequest().headers(HeaderUtil.createAlert("User doesn't exist with id " + id,id.toString())).build();
+        }
+
         userService.deleteUser(id);
         return ResponseEntity.ok().headers(HeaderUtil.createAlert( "A user is deleted with identifier " + id, id.toString())).build();
     }
@@ -92,7 +97,6 @@ public class UserController {
     @GetMapping("/users/posts")
     public CompletableFuture<List<UserPost>> getAllUserMessages() {
         log.debug("REST request to get all user messages");
-        log.info("Servlet Thread Id = " + Thread.currentThread().getName());
         CompletableFuture<List<UserPost>> userPosts = new CompletableFuture<>();
         try {
             userPosts.complete(userService.getUserMessagesFromCloud().get());

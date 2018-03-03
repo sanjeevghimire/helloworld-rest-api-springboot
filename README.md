@@ -83,3 +83,14 @@ There are two kind of test written.
 
 Run: `mvn clean test`
 
+# Swagger API definition
+The API UI can be accessed using URL: `http://localhost:8080/swagger-ui.html`
+
+![Swagger UI](https://github.com/sanjeevghimire/helloworld-rest-api-springboot/blob/master/swaggerUI.png)
+
+# License
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+
+

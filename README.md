@@ -1,6 +1,9 @@
 # REST API using Spring BOot
 The project consists of HOW-TOs tutorial on building REST API using spring boot.
 
+# Travis CI
+[![Build Status](https://travis-ci.org/sanjeevghimire/helloworld-rest-api-springboot.svg?branch=master)](https://travis-ci.org/sanjeevghimire/helloworld-rest-api-springboot)
+
 # Pre-Requisites
 1. Spring Boot 1.5.0
 2. Hibernate, JPA

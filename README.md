@@ -19,8 +19,12 @@ Sample Output:
 `[{"id":1,"username":"sanjeevghimire","firstName":"Sanjeev","lastName":"Ghimire","email":"gsanjeev7@gmail.com"},{"id":2,"username":"johndoe","firstName":"John","lastName":"doe","email":"johndoe@fakemail.com"}]` 
 
 ## Create User - POST 
-Command: `curl -i -X POST -H "Content-Type:application/json" http://localhost:8080/api/users -d '{"username":"sg","firstName":"S","lastName":"G","email":"sg@gmail.com"}'` 
+Command: 
+
+`curl -i -X POST -H "Content-Type:application/json" http://localhost:8080/api/users -d '{"username":"sg","firstName":"S","lastName":"G","email":"sg@gmail.com"}'` 
+
 Sample Output: 
+
 `HTTP/1.1 201
 Location: /api/users/
 X-helloWorld-alert: A comcast user is created with identifier sg

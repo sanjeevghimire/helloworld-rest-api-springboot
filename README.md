@@ -1,4 +1,4 @@
-# REST API using Spring BOot
+# REST API using Spring Boot
 The project consists of HOW-TOs tutorial on building REST API using spring boot.
 
 # Travis CI
